@@ -30,11 +30,12 @@ class RecepiesGateway
 
     public function create(array $data): string
     {
-        $sql = "INSERT INTO recepie (name, calories, prep, cook, serves, description, ingredients, steps)
-                VALUES (:name, :calories, :prep, :cook, :serves, :description, :ingredients, :steps)";
+        $sql = "INSERT INTO recepie (category, name, calories, prep, cook, serves, description, ingredients, steps)
+                VALUES (:category, :name, :calories, :prep, :cook, :serves, :description, :ingredients, :steps)";
                 
         $stmt = $this->conn->prepare($sql);
         
+        $stmt->bindValue(":category", $data["category"], PDO::PARAM_STR);
         $stmt->bindValue(":name", $data["name"], PDO::PARAM_STR);
         $stmt->bindValue(":calories", $data["calories"] ?? 0, PDO::PARAM_INT);
         $stmt->bindValue(":prep", $data["prep"] ?? "", PDO::PARAM_STR);
@@ -47,5 +48,45 @@ class RecepiesGateway
         $stmt->execute();
         
         return $this->conn->lastInsertId();
+    }
+    public function get(string $id): array | false
+    {
+        $sql = "SELECT *
+                FROM recepie
+                WHERE id = :id";
+                
+        $stmt = $this->conn->prepare($sql);
+        
+        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+        
+        $stmt->execute();
+        
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+       
+        
+        return $data;
+    }
+    public function getCat(string $category): array 
+    {
+        $sql = "SELECT *
+                FROM recepie
+                WHERE category = :category";
+                
+        $stmt = $this->conn->prepare($sql);
+        
+        $stmt->bindValue(":category", $category, PDO::PARAM_STR);
+        
+        $stmt->execute();
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            
+            
+            $data[] = $row;
+        }
+        
+       
+        
+        return $data;
     }
 }

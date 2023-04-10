@@ -5,18 +5,81 @@ class RecepiesController
     {
 
     }
-    public function processRequest(string $method, ?string $id): void
+    public function processRequest(string $method, ?string $category, ?string $id): void
     {
         if ($id) {
-            $this->processRsourceRequest($method,$id);
+            $this->processResourceRequest($method,$id);
+        }
+        else if($category) {
+            $this->processCategoryRequest($method,$category);
         }
         else {
             $this->processCollectionRequest($method);
         }
     }
 
-    private function processRsourceRequest(string $method, string $id): void
+        
+    private function processResourceRequest(string $method, string $id): void
     {
+        $recepie = $this->gateway->get($id);
+        
+        if ( ! $recepie) {
+            http_response_code(404);
+            echo json_encode(["message" => "recepie not found"]);
+            return;
+        }
+        
+        switch ($method) {
+            case "GET":
+                echo json_encode($recepie);
+                break;
+                
+            case "PATCH":
+                $data = (array) json_decode(file_get_contents("php://input"), true);
+                
+                $errors = $this->getValidationErrors($data, false);
+                
+                if ( ! empty($errors)) {
+                    http_response_code(422);
+                    echo json_encode(["errors" => $errors]);
+                    break;
+                }
+                
+                $rows = $this->gateway->update($recepie, $data);
+                
+                echo json_encode([
+                    "message" => "recepie $id updated",
+                    "rows" => $rows
+                ]);
+                break;
+                
+            case "DELETE":
+                $rows = $this->gateway->delete($id);
+                
+                echo json_encode([
+                    "message" => "recepie $id deleted",
+                    "rows" => $rows
+                ]);
+                break;
+                
+            default:
+                http_response_code(405);
+                header("Allow: GET, PATCH, DELETE");
+        }
+    }
+
+    private function processCategoryRequest(string $method, string $category): void
+    {
+        $recepie = $this->gateway->getCat($category);   
+        if (! $recepie) {
+            http_response_code(404);
+            echo json_encode(["message" => "recepie not found"]);
+            return;
+        }
+        else 
+        {
+            echo json_encode($recepie);
+        }
 
     }
     private function processCollectionRequest(string $method): void {

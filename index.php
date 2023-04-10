@@ -12,11 +12,12 @@ if ($parts[2] != "recepies") {
     http_response_code(404);
     exit;
 }
-$id = $parts[3] ?? null;
+$category = $parts[3] ?? null;
+$id = $parts[4] ?? null;
 
 $database = new Database("localhost","recipe_db","root","");
 $gateway = new RecepiesGateway($database);
 $controller = new RecepiesController($gateway);
-$controller->processRequest($_SERVER["REQUEST_METHOD"],$id);
+$controller->processRequest($_SERVER["REQUEST_METHOD"],$category,$id);
 
 ?>
