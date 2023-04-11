@@ -67,6 +67,45 @@ class RecepiesGateway
         
         return $data;
     }
+    
+    public function update(array $current, array $new): int
+    {
+        $sql = "UPDATE recepie
+                SET category= :category, name = :name, calories = :calories, prep = :prep, cook = :cook, serves = :serves, description = :description, ingredients = :ingredients, steps = :steps
+                WHERE id = :id";
+                
+        $stmt = $this->conn->prepare($sql);
+        
+        $stmt->bindValue(":category", $new["category"] ?? $current["category"], PDO::PARAM_STR);
+        $stmt->bindValue(":name", $new["name"] ?? $current["name"], PDO::PARAM_STR);
+        $stmt->bindValue(":calories", $new["calories"] ?? $current["calories"], PDO::PARAM_INT);
+        $stmt->bindValue(":prep", $new["prep"] ?? $current["prep"], PDO::PARAM_STR);
+        $stmt->bindValue(":cook", $new["cook"] ?? $current["cook"], PDO::PARAM_STR);
+        $stmt->bindValue(":serves", $new["serves"] ?? $current["serves"], PDO::PARAM_INT);
+        $stmt->bindValue(":description", $new["description"] ?? $current["description"], PDO::PARAM_STR);
+        $stmt->bindValue(":ingredients", $new["ingredients"] ?? $current["ingredients"], PDO::PARAM_STR);
+        $stmt->bindValue(":steps", $new["steps"] ?? $current["steps"], PDO::PARAM_STR);
+        
+        $stmt->bindValue(":id", $current["id"], PDO::PARAM_INT);
+        
+        $stmt->execute();
+        
+        return $stmt->rowCount();
+    }
+    
+    public function delete(string $id): int
+    {
+        $sql = "DELETE FROM recepie
+                WHERE id = :id";
+                
+        $stmt = $this->conn->prepare($sql);
+        
+        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+        
+        $stmt->execute();
+        
+        return $stmt->rowCount();
+    }
     public function getCat(string $category): array 
     {
         $sql = "SELECT *
