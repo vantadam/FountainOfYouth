@@ -5,10 +5,13 @@ class RecepiesController
     {
 
     }
-    public function processRequest(string $method, ?string $category, ?string $id): void
+    public function processRequest(string $method, ?string $category, ?string $query, ?string $id): void
     {
         if ($id) {
             $this->processResourceRequest($method,$id);
+        }
+        else if($query) {
+            $this->processQueryRequest($method,$query);
         }
         else if($category) {
             $this->processCategoryRequest($method,$category);
@@ -82,6 +85,23 @@ class RecepiesController
         }
 
     }
+
+    private function processQueryRequest(string $method, string $query): void
+    {
+        $recepie = $this->gateway->getQuery($query);   
+        if (! $recepie) {
+            http_response_code(404);
+            echo json_encode(["message" => "recepie not found"]);
+            return;
+        }
+        else 
+        {
+            echo json_encode($recepie);
+        }
+
+    }   
+
+
     private function processCollectionRequest(string $method): void {
         switch ($method){
             case "GET" :

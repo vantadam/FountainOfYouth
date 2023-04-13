@@ -128,4 +128,31 @@ class RecepiesGateway
         
         return $data;
     }
+
+    public function getQuery(string $query): array 
+    {
+        $sql = "SELECT *
+                FROM recepie
+                WHERE name LIKE :query";
+                
+        $stmt = $this->conn->prepare($sql);
+        
+        // Bind the parameter value with % wildcards added for partial matching
+        $stmt->bindValue(":query", "%" . $query . "%", PDO::PARAM_STR);
+        
+        $stmt->execute();
+        
+        // Initialize the result array
+        $data = [];
+        
+        // Fetch each row and add it to the result array
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        
+        // Return the result array
+        return $data;
+    }
+    
+
 }
