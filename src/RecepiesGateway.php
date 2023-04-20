@@ -30,8 +30,8 @@ class RecepiesGateway
 
     public function create(array $data): string
     {
-        $sql = "INSERT INTO recepie (category, name, calories, prep, cook, serves, description, ingredients, steps)
-                VALUES (:category, :name, :calories, :prep, :cook, :serves, :description, :ingredients, :steps)";
+        $sql = "INSERT INTO recepie (category, name, calories, prep, cook, serves, description, ingredients, steps,imageUrl)
+                VALUES (:category, :name, :calories, :prep, :cook, :serves, :description, :ingredients, :steps,:imageUrl)";
                 
         $stmt = $this->conn->prepare($sql);
         
@@ -44,6 +44,7 @@ class RecepiesGateway
         $stmt->bindValue(":description", $data["description"] ?? "", PDO::PARAM_STR);
         $stmt->bindValue(":ingredients", $data["ingredients"] ?? "", PDO::PARAM_STR);
         $stmt->bindValue(":steps", $data["steps"] ?? "", PDO::PARAM_STR);
+        $stmt->bindValue(":imageUrl", $data["imageUrl"] ?? "", PDO::PARAM_STR);
         
         $stmt->execute();
         
@@ -85,6 +86,7 @@ class RecepiesGateway
         $stmt->bindValue(":description", $new["description"] ?? $current["description"], PDO::PARAM_STR);
         $stmt->bindValue(":ingredients", $new["ingredients"] ?? $current["ingredients"], PDO::PARAM_STR);
         $stmt->bindValue(":steps", $new["steps"] ?? $current["steps"], PDO::PARAM_STR);
+        $stmt->bindValue(":imageUrl", $new["imageUrl"] ?? $current["imageUrl"], PDO::PARAM_STR);
         
         $stmt->bindValue(":id", $current["id"], PDO::PARAM_INT);
         
