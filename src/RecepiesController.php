@@ -7,20 +7,32 @@ class RecepiesController
     }
     public function processRequest(string $method, ?string $category, ?string $query, ?string $id): void
     {
-        if ($id) {
+        if ($category=="login"){
+            $this->processLogin($query,$id);
+        } 
+        else if($category=="admin"){
+            $this->GetByadmin($id);
+        }
+        else if($category=="delete"){
+            $this->deleteRec($id);
+        }
+        
+        else if ($id) {
             $this->processResourceRequest($method,$id);
         }
         else if($query) {
             $this->processQueryRequest($method,$query);
         }
-        else if($category) {
-            $this->processCategoryRequest($method,$category);
-        }
+        
+           
+        else if ($category){
+            $this->processCategoryRequest($method,$category);}
+        
         else {
             $this->processCollectionRequest($method);
         }
     }
-
+    
         
     private function processResourceRequest(string $method, string $id): void
     {
@@ -145,4 +157,39 @@ class RecepiesController
         
         return $errors;
     }
+
+    private function processLogin(string $email,string $password) : void {
+        $admins = $this->gateway->getadmins($email,$password);
+        
+        if ( ! $admins) {
+            http_response_code(404);
+            echo json_encode(["message" => "admin not found"]);
+            return;
+        }
+        else {
+            echo json_encode($admins);
+        }
+    }
+
+    private function getByAdmin(string $id) : void{
+        $admins = $this->gateway->adminget($id);
+        
+        if ( ! $admins) {
+            http_response_code(404);
+            echo json_encode(["message" => "not found"]);
+            return;
+        }
+        else {
+            echo json_encode($admins);
+        }
+    }
+
+    private function deleteRec(string $id) : void {
+        $rows = $this->gateway->delete($id);
+                
+        echo json_encode([
+            "message" => "recepie $id deleted",
+            "rows" => $rows
+        ]);
+    } 
 }

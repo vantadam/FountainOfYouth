@@ -8,7 +8,7 @@ set_exception_handler("ErrorHandler::handleException");
 header('Access-Control-Allow-Origin: *');
 header("Content-type: application/json; charset=UTF-8");
 header('Access-Control-Allow-Credentials: true');
-header("Access-Control-Allow-Methods: POST, PUT, PATCH, GET, DELETE, OPTIONS");
+header("Access-Control-Allow-Methods: POST, PATCH, PUT, GET, DELETE");
 header("Access-Control-Allow-Headers: Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization");
 $parts= explode("/",$_SERVER["REQUEST_URI"]);
 if ($parts[2] != "recepies") {
