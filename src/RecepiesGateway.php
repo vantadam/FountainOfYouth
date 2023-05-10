@@ -87,7 +87,7 @@ class RecepiesGateway
         $stmt->bindValue(":ingredients", $new["ingredients"] ?? $current["ingredients"], PDO::PARAM_STR);
         $stmt->bindValue(":steps", $new["steps"] ?? $current["steps"], PDO::PARAM_STR);
         $stmt->bindValue(":imageUrl", $new["imageUrl"] ?? $current["imageUrl"], PDO::PARAM_STR);
-        
+
         $stmt->bindValue(":id", $current["id"], PDO::PARAM_INT);
         
         $stmt->execute();
